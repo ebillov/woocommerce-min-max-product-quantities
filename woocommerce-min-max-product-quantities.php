@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Min & Max Product Quantities
 Plugin URI:  https://virson.wordpress.com/
 Description: An extension plugin to WooCommerce that enables minimum and maximum product quantity limitations when adding to cart.
-Version:     0.0.1a
+Version:     1.0.0
 Author:      Virson Ebillo
 Author URI:  https://virson.wordpress.com/
 License:     GNUv3
@@ -65,6 +65,6 @@ if( !class_exists( 'WMMPQ_Main', false ) ){
  * Note: Attach the version number as well
  */
 function WMMPQ(){
-	return WMMPQ_Main::instance('0.0.1a');
+	return WMMPQ_Main::instance('1.0.0');
 }
 WMMPQ();
