@@ -13,7 +13,7 @@ defined('ABSPATH') or exit;
 add_filter('woocommerce_update_cart_validation', function( $bool, $cart_item_key, $values, $quantity ){
 
     //Begin validation
-    $cart_validation = $this->cart_validation( $quantity, $values['product_id'], $values['variation_id'] );
+    $cart_validation = $this->cart_validation( 'update', $quantity, $values['product_id'], $values['variation_id'] );
 
     //Check return bool
     if( $cart_validation == false ){

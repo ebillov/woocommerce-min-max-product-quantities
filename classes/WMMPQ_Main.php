@@ -7,6 +7,7 @@ class WMMPQ_Main {
 	
 	//Defined properties
     protected static $instance = null; //A single instance of the class
+    protected $action;
     
 	/**
 	 * Cart instance.
@@ -140,19 +141,24 @@ class WMMPQ_Main {
             $product_name = $product->get_name();
         }
 
-        //Begin validation
-        if($quantity < $min || $quantity > $max){
-
-            wc_add_notice('Product Quantity of <b>' . $product_name . '</b> must be in the range of <b>' . $min . ' to ' . $max . '</b>.', 'error');
-            return false;
-        }
-
         //Get cart item quantity validation
         $_quantity = $this->validate_cart_item_quantity($product_id);
 
-        //Check validation output
-        if( $_quantity !== true && ($_quantity + $quantity) > $max ){
+        //Check validation output initiated in the Product page
+        if( $this->action == 'add' && $_quantity !== true && ($_quantity + $quantity) > $max ){
             wc_add_notice('Product Quantity of <b>' . $product_name . '</b> must be in the range of <b>' . $min . ' to ' . $max . '</b>. Your cart already contains <b>' . $_quantity . ' x ' . $product_name . '</b>. Please adjust accordingly.', 'error');
+            return false;
+        }
+
+        //Validations initiated in the Cart page
+        if( $this->action == 'update' && $_quantity !== true && $quantity > $max ){
+            wc_add_notice('Product Quantity of <b>' . $product_name . '</b> must be in the range of <b>' . $min . ' to ' . $max . '</b>. Your cart already contains <b>' . $_quantity . ' x ' . $product_name . '</b>. Please adjust accordingly.', 'error');
+            return false;
+        }
+
+        //Default validation
+        if($quantity < $min || $quantity > $max){
+            wc_add_notice('Product Quantity of <b>' . $product_name . '</b> must be in the range of <b>' . $min . ' to ' . $max . '</b>.', 'error');
             return false;
         }
 
@@ -162,12 +168,21 @@ class WMMPQ_Main {
 
     /**
      * Method for add to cart and update to cart validations
+     * @param string $action either add or update string values
      * @param int $quantity
      * @param int $product_id
      * @param int $variation_id
      * @return bool
      */
-    public function cart_validation($quantity, $product_id, $variation_id = null){
+    public function cart_validation($action, $quantity, $product_id, $variation_id = null){
+
+        //Check action values
+        if( !in_array( $action, ['add', 'update'] ) ){
+            return true;
+        }
+
+        //Set action value
+        $this->action = $action;
 
         //Get the product
         $product = wc_get_product( $product_id );
